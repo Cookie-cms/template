@@ -25,7 +25,7 @@
 
     <div class="container cat" id="container">
         <div class="form-container sign-up">
-            <form method="post" action="{{ registerform }}" >
+            <form method="post" id="formreg" >
                 <h2>Create Account</h2>
                 <div class="social-icons">
                     <a href="{{ discordlink }}" class="icon"><i class="fa-brands fa-discord"></i></a>
@@ -37,7 +37,7 @@
             </form>
         </div>
         <div class="form-container sign-in">
-            <form method="post" action="{{ loginform }}">
+            <form method="post" id="formlogin">
                 <h1>Sign In</h1>
                 <div class="social-icons">
                     <a href="{{ discordlink }}" class="icon"><i class="fa-brands fa-discord"></i></a>
@@ -56,7 +56,7 @@
                     <p>Enter your personal details to use all of site features</p>
                     <button class="hidden" id="login">Sign In</button>
                 </div>
-                <div class="toggle-panel toggle-right">
+                <div colass="toggle-panel toggle-right">
                     <h1>Hello, Friend!</h1>
                     <p>Register with your personal details to use all of site features</p>
                     <button class="hidden" id="register">Sign Up</button>
@@ -64,6 +64,23 @@
             </div>
         </div>
     </div>
+    <button type="button" class="btn btn-primary" id="liveToastBtn">Show live toast</button>
+
+<div class=" btn-primary position-fixed bottom-0 end-0 p-3" data-bs-autohide="false">
+  <div id="liveToast" class="toast text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-body" >
+        <div class="d-flex">
+            <div class="toast-body"id="toastBody">
+              Hello, world! This is a toast message.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
     // Accessing the PHP variable value in JavaScript
     var generatorUsernameSetting = "{{ genusername }}";
@@ -91,11 +108,103 @@
         }
         return randomString;
     }
-</script>
 
+    const toastTrigger = document.getElementById('liveToastBtn')
+    const toastLiveExample = document.getElementById('liveToast')
+    
+    if (toastTrigger) {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastTrigger.addEventListener('click', () => {
+        toastBootstrap.show()
+        })
+    }
+
+    $(document).ready(function() {
+        $('#formreg').submit(function(event) {
+            event.preventDefault(); // Prevent the default form submission
+    
+            // Get the form data
+            var formData = $(this).serialize();
+    
+            // Make an Ajax request
+            $.ajax({
+                type: 'POST',
+                url: '{{ registerform }}',
+                data: formData,
+                // Handle AJAX errors
+                success: function(response) {
+                // Check if the response contains the error message
+                if (response.startsWith("success")) {
+                    // // console.log(response);
+                        window.location.replace("/settings");
+                    }
+                if (response.startsWith("error:")) {
+                    // Extract the error message after "error: "
+                    const errorMessage = response.slice(6); // Slice from index 6 to get the message
+
+                    const toastTrigger = document.getElementById('liveToastBtn');
+                    const toastLiveExample = document.getElementById('liveToast');
+                    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+                    var toastBodyElement = document.getElementById('toastBody');
+
+                    // Update the text content with the extracted error message
+                    toastBodyElement.textContent = errorMessage;
+
+                    // Show the toast
+                    toastBootstrap.show();
+                } else {
+                    // Handle other cases or success
+                    console.log(response);
+                }
+            }
+            });
+        });
+    });
+    $(document).ready(function() {
+        $('#formlogin').submit(function(event) {
+            event.preventDefault(); // Prevent the default form submission
+    
+            // Get the form data
+            var formData = $(this).serialize();
+    
+            // Make an Ajax request
+            $.ajax({
+                type: 'POST',
+                url: '{{ loginform }}',
+                data: formData,
+                success: function(response) {
+                    // Handle the successful response here (update UI, show messages, etc.)
+                    // // console.log(response);
+                     window.location.replace("/settings");
+                },
+                // Handle AJAX errors
+                success: function(response) {
+                // Check if the response contains the error message
+                if (response.startsWith("error:")) {
+                    // Extract the error message after "error: "
+                    const errorMessage = response.slice(6); // Slice from index 6 to get the message
+
+                    const toastTrigger = document.getElementById('liveToastBtn');
+                    const toastLiveExample = document.getElementById('liveToast');
+                    const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
+                    var toastBodyElement = document.getElementById('toastBody');
+
+                    // Update the text content with the extracted error message
+                    toastBodyElement.textContent = errorMessage;
+
+                    // Show the toast
+                    toastBootstrap.show();
+                } else {
+                    // Handle other cases or success
+                    console.log(response);
+                }
+            }
+            });
+        });
+    });
+    </script>
     
     <script src="/template/js/script.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
