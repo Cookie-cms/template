@@ -100,14 +100,14 @@
                 // Handle AJAX errors
                 success: function(response) {
                 // Check if the response contains the error message
-                if (response.includes("Passwords do not match.")) {
+                if (response.includes("Passwords empty or do not match.")) {
                     const toastTrigger = document.getElementById('liveToastBtn');
                     const toastLiveExample = document.getElementById('liveToast');
                     const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample);
                     var toastBodyElement = document.getElementById('toastBody');
 
 // Update the text content
-                    toastBodyElement.textContent = 'Passwords do not match.';
+                    toastBodyElement.textContent = 'Passwords empty or do not match.';
                     // Show the toast
                     toastBootstrap.show();
                 } else {
